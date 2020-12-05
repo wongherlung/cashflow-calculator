@@ -1,0 +1,5 @@
+key: your_unique_key_here
+name: your_category_title_here
+priority: 10
+regex:
+  - <Regex string to identify this category>

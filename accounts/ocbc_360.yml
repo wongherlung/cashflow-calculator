@@ -1,0 +1,12 @@
+key: ocbc_360
+name: OCBC 360
+description: OCBC 360 Account
+filename_regex: TransactionHistory_[0-9]{14}.csv$
+content_regex:
+  - 360 Account
+transaction_start_row: 7
+num_rows_per_transaction: 2
+inflow_column: 5
+outflow_column: 4
+description_columns:
+  - 3

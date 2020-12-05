@@ -4,10 +4,10 @@ enum TransactionType
 end
 
 struct Transaction
-  property type, value, date, category, description, bank
+  property type, value, date, category, description, account
 
   def initialize(@type : TransactionType, @value : Float32,
     @date : Time, @category : String, @description : String,
-    @bank : Bank)
+    @account : String)
   end
 end

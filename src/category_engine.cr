@@ -6,7 +6,7 @@ class CategoryEngine
     Dir["../categories/*.yml"].each do |yaml_file|
       @categories.push(Category.new(File.read(yaml_file)))
     end
-    @categories.sort_by { |x| x.priority }
+    @categories.sort_by! { |x| x.priority }
   end
 
   def find_category_for(description : String) : (NamedTuple(category: Category, matched_regex: String) | Nil)

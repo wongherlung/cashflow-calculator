@@ -1,10 +1,12 @@
 require "yaml"
 require "csv"
+require "./category_engine"
 require "./models/statement.cr"
 require "./models/transaction.cr"
 
 class ParsingEngine
   def initialize
+    @category_engine = CategoryEngine.new
     @transactions = Array(Transaction).new
     @statements = Array(Statement).new
     Dir["../accounts/*.yml"].each do |yaml_file|
@@ -24,7 +26,51 @@ class ParsingEngine
       end
 
       csv_arr = CSV.parse(csv_string)
-      puts csv_arr[s.transaction_start_row-1...csv_arr.size]
+      # Only process from this row onwards
+      csv_arr = csv_arr[s.transaction_start_row..csv_arr.size-1]
+
+      i = 0
+      until i >= csv_arr.size-1
+        value = date = category = description = bank = ""
+        transaction_type = TransactionType::Outflow
+
+        # Account for multiple rows per transaction
+        (i...i+s.num_rows_per_transaction).each do |j|
+          # Special case when subsequent row is the next transaction
+          if j != i && !csv_arr[j][s.date_column].empty?
+            i -= s.num_rows_per_transaction - 1
+            break
+          end
+
+          # Extract transaction information out
+          date += csv_arr[j][s.date_column] unless csv_arr[j][s.date_column].empty?
+          s.description_columns.each do |k|
+            description += csv_arr[j][k] + " " unless csv_arr[j][k].empty?
+          end
+          if i == j
+            value = csv_arr[j][s.outflow_column] unless csv_arr[j][s.outflow_column].empty?
+            value = csv_arr[j][s.inflow_column] unless csv_arr[j][s.inflow_column].empty?
+            transaction_type = TransactionType::Inflow if csv_arr[j][s.outflow_column].empty?
+          end
+        end
+
+        category_info = @category_engine.find_category_for(description)
+        @transactions.push(Transaction.new(
+          transaction_type,
+          value.gsub(",", "").to_f32.abs,
+          Time.parse(date, s.date_format, Time::Location::UTC),
+          category_info.nil? ? "Others" : category_info[:category].name,
+          description,
+          s.name
+        ))
+        i += s.num_rows_per_transaction
+      end
+    end
+
+    # Filter out ignored transactions
+    @transactions.reject! { |x| x.category == "Ignored" }
+    @transactions.each do |t|
+      puts t
     end
   end
 

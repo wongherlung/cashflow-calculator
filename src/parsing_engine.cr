@@ -16,7 +16,7 @@ class ParsingEngine
 
   def parse
     Dir["../input/*.csv"].each do |csv_file|
-      csv_string = File.read(csv_file)
+      csv_string = File.read(csv_file).delete("\"")
       s = get_statement_template(csv_file, csv_string)
 
       # Ignore if bank can't be determined for any CSV
@@ -45,7 +45,7 @@ class ParsingEngine
           end
 
           # Extract transaction information out
-          date += csv_arr[j][s.date_column] unless csv_arr[j][s.date_column].empty?
+          date = csv_arr[j][s.date_column] unless csv_arr[j][s.date_column].empty?
           s.description_columns.each do |k|
             description += csv_arr[j][k] + " " unless csv_arr[j][k].empty?
           end
@@ -55,6 +55,8 @@ class ParsingEngine
             transaction_type = TransactionType::Inflow if csv_arr[j][s.outflow_column].gsub(" ", "").empty?
           end
         end
+
+        date = date[1..] if date.codepoints.includes?(65279)
 
         category_info = @category_engine.find_category_for(description)
         @transactions.push(Transaction.new(

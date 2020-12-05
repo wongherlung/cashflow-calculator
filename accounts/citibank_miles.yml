@@ -1,0 +1,15 @@
+key: citibank_miles
+name: Citibank Miles
+description: Citibank Miles Card
+filename_regex: ACCT_[0-9]{3}_[0-9]{2}_[0-9]{2}_[0-9]{4}.csv$
+content_regex:
+  - ""
+# Refer to https://crystal-lang.org/api/0.32.1/Time/Format.html
+date_format: "%d/%m/%Y"
+transaction_start_row: 1
+num_rows_per_transaction: 1
+date_column: 1
+inflow_column: 4
+outflow_column: 3
+description_columns:
+  - 2

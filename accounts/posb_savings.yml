@@ -1,0 +1,17 @@
+key: posb_savings
+name: POSB Savings
+description: POSB Savings Account
+filename_regex: "[a-z0-9]{32}.P[0-9]{15}.csv$"
+content_regex:
+  - POSB Passbook Savings Account
+# Refer to https://crystal-lang.org/api/0.32.1/Time/Format.html
+date_format: "%d %b %Y"
+transaction_start_row: 21
+num_rows_per_transaction: 1
+date_column: 1
+inflow_column: 4
+outflow_column: 3
+description_columns:
+  - 5
+  - 6
+  - 7

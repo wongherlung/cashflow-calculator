@@ -28,9 +28,11 @@ class ParsingEngine
       csv_arr = CSV.parse(csv_string)
       # Only process from this row onwards
       csv_arr = csv_arr[s.transaction_start_row..csv_arr.size-1]
+      # Remove empty rows
+      csv_arr.reject! { |x| x.empty? }
 
       i = 0
-      until i >= csv_arr.size-1
+      until i >= csv_arr.size
         value = date = category = description = bank = ""
         transaction_type = TransactionType::Outflow
 
@@ -48,9 +50,9 @@ class ParsingEngine
             description += csv_arr[j][k] + " " unless csv_arr[j][k].empty?
           end
           if i == j
-            value = csv_arr[j][s.outflow_column] unless csv_arr[j][s.outflow_column].empty?
-            value = csv_arr[j][s.inflow_column] unless csv_arr[j][s.inflow_column].empty?
-            transaction_type = TransactionType::Inflow if csv_arr[j][s.outflow_column].empty?
+            value = csv_arr[j][s.outflow_column] unless csv_arr[j][s.outflow_column].gsub(" ", "").empty?
+            value = csv_arr[j][s.inflow_column] unless csv_arr[j][s.inflow_column].gsub(" ", "").empty?
+            transaction_type = TransactionType::Inflow if csv_arr[j][s.outflow_column].gsub(" ", "").empty?
           end
         end
 

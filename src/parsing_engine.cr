@@ -56,6 +56,8 @@ class ParsingEngine
           end
         end
 
+        # Remove BOM character if it exists
+        # See: https://stackoverflow.com/questions/33592432/mysterious-leading-empty-character-at-beginning-of-a-string-which-came-from-cs
         date = date[1..] if date.codepoints.includes?(65279)
 
         category_info = @category_engine.find_category_for(description)

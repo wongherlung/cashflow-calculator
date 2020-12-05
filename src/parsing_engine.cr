@@ -14,9 +14,9 @@ class ParsingEngine
     end
   end
 
-  def parse
+  def parse : Array(Transaction)
     Dir["../input/*.csv"].each do |csv_file|
-      csv_string = File.read(csv_file).delete("\"")
+      csv_string = File.read(csv_file)
       s = get_statement_template(csv_file, csv_string)
 
       # Ignore if bank can't be determined for any CSV
@@ -24,6 +24,10 @@ class ParsingEngine
         STDERR.puts "Unable to determine bank for #{csv_file.split("/").last}"
         next
       end
+
+      # Remove BOM character if it exists
+      # See: https://stackoverflow.com/questions/33592432/mysterious-leading-empty-character-at-beginning-of-a-string-which-came-from-cs
+      csv_string = csv_string[1..] if csv_string.codepoints.includes?(65279)
 
       csv_arr = CSV.parse(csv_string)
       # Only process from this row onwards
@@ -75,9 +79,7 @@ class ParsingEngine
 
     # Filter out ignored transactions
     @transactions.reject! { |x| x.category == "Ignored" }
-    @transactions.each do |t|
-      puts t
-    end
+    return @transactions
   end
 
   private def get_statement_template(filename : String, csv_string : String) : (Statement | Nil)

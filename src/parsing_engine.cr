@@ -15,7 +15,13 @@ class ParsingEngine
   end
 
   def parse : Array(Transaction)
-    Dir["../input/*.csv"].each do |csv_file|
+    csv_files = Dir["../input/2018*/*.csv"]
+    if csv_files.empty?
+      STDERR.puts("No CSV files detected in ./input.")
+      exit
+    end
+
+    csv_files.each do |csv_file|
       csv_string = File.read(csv_file)
       s = get_statement_template(csv_file, csv_string)
 
@@ -42,6 +48,8 @@ class ParsingEngine
 
         # Account for multiple rows per transaction
         (i...i+s.num_rows_per_transaction).each do |j|
+          break if j >= csv_arr.size
+
           # Special case when subsequent row is the next transaction
           if j != i && !csv_arr[j][s.date_column].empty?
             i -= s.num_rows_per_transaction - 1

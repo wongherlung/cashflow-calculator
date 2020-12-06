@@ -7,6 +7,7 @@ class CategoryEngine
     Dir["../categories/*.yml"].each do |yaml_file|
       category = Category.new(File.read(yaml_file))
 
+      # Check if category key is unique or not.
       if keys.includes?(category.key)
         STDERR.puts("Duplicate key for #{category.key} found.")
         exit

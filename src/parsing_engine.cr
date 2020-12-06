@@ -9,13 +9,23 @@ class ParsingEngine
     @category_engine = CategoryEngine.new
     @transactions = Array(Transaction).new
     @statements = Array(Statement).new
+    statement_keys = Set(String).new
     Dir["../accounts/*.yml"].each do |yaml_file|
-      @statements.push(Statement.new(File.read(yaml_file)))
+      statement = Statement.new(File.read(yaml_file))
+
+      # Check whether acocunt key is unique or not.
+      if statement_keys.includes?(statement.key)
+        STDERR.puts("Duplicate account key for #{statement.key} found.")
+        exit
+      end
+
+      statement_keys.add(statement.key)
+      @statements.push(statement)
     end
   end
 
   def parse : Array(Transaction)
-    csv_files = Dir["../input/2018*/*.csv"]
+    csv_files = Dir["../input/*.csv"]
     if csv_files.empty?
       STDERR.puts("No CSV files detected in ./input.")
       exit

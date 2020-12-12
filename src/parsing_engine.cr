@@ -5,24 +5,20 @@ require "./models/statement.cr"
 require "./models/transaction.cr"
 
 class ParsingEngine
-  def initialize(csv_files : Array(String))
+  def initialize(csv_files : Array(String), account_files : Array(String), category_files : Array(String))
     @csv_files = csv_files
-
-    @category_engine = CategoryEngine.new
+    @category_engine = CategoryEngine.new(category_files)
     @transactions = Array(Transaction).new
     @statements = Array(Statement).new
-    statement_keys = Set(String).new
-    Dir["../accounts/*.yml"].each do |yaml_file|
-      statement = Statement.new(File.read(yaml_file))
 
-      # Check whether acocunt key is unique or not.
-      if statement_keys.includes?(statement.key)
-        STDERR.puts("Duplicate account key for #{statement.key} found.")
-        exit
-      end
+    @statements = account_files.map { |a| Statement.new(File.read(a)) }
 
-      statement_keys.add(statement.key)
-      @statements.push(statement)
+    # Check for duplicate account keys
+    statement_keys = @statements.map { |s| s.key }
+    duplicate_keys = statement_keys.select { |s| statement_keys.count(s) > 1 }
+    if duplicate_keys.size > 0
+      STDERR.puts("[Error] Duplicate account key #{duplicate_keys.uniq.join(", ")} found.")
+      exit 1
     end
   end
 

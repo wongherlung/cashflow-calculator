@@ -1,10 +1,10 @@
 require "./models/category.cr"
 
 class CategoryEngine
-  def initialize
+  def initialize(category_files : Array(String))
     @categories = Array(Category).new
     keys = Set(String).new
-    Dir["../categories/*.yml"].each do |yaml_file|
+    category_files.each do |yaml_file|
       category = Category.new(File.read(yaml_file))
 
       # Check if category key is unique or not.

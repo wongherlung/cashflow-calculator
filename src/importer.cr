@@ -31,6 +31,7 @@ class Importer
     end
 
     if ARGV.empty?
+      # If no path was provided, check if current directory has CSV files
       if Dir["./*.csv"].empty?
         STDERR.puts("[Error] No CSV files found in current directory.")
         exit

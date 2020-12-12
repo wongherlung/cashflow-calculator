@@ -5,7 +5,9 @@ require "./models/statement.cr"
 require "./models/transaction.cr"
 
 class ParsingEngine
-  def initialize
+  def initialize(csv_files : Array(String))
+    @csv_files = csv_files
+
     @category_engine = CategoryEngine.new
     @transactions = Array(Transaction).new
     @statements = Array(Statement).new
@@ -25,13 +27,7 @@ class ParsingEngine
   end
 
   def parse : Array(Transaction)
-    csv_files = Dir["../input/*.csv"]
-    if csv_files.empty?
-      STDERR.puts("No CSV files detected in ./input.")
-      exit
-    end
-
-    csv_files.each do |csv_file|
+    @csv_files.each do |csv_file|
       csv_string = File.read(csv_file)
       s = get_statement_template(csv_file, csv_string)
 

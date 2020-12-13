@@ -16,7 +16,7 @@ def main
   end
 
   calculation_engine = CalculationEngine.new(transactions)
-  puts calculation_engine.total(TransactionType::Inflow)
+  puts calculation_engine.total(TransactionType::Outflow, "atm_withdrawal")
 end
 
 main

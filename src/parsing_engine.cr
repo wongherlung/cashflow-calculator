@@ -79,7 +79,7 @@ class ParsingEngine
           transaction_type,
           value.gsub(",", "").to_f32.abs,
           Time.parse(date, s.date_format, Time::Location::UTC),
-          category_info.nil? ? "Others" : category_info[:category].name,
+          category_info.nil? ? {key: "others", name: "Others"} : {key: category_info[:category].key, name: category_info[:category].name},
           description,
           s.name
         ))

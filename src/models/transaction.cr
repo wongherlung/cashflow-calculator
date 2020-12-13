@@ -1,3 +1,5 @@
+require "./category"
+
 enum TransactionType
   Outflow
   Inflow
@@ -7,7 +9,7 @@ struct Transaction
   property type, value, date, category, description, account
 
   def initialize(@type : TransactionType, @value : Float32,
-    @date : Time, @category : String, @description : String,
+    @date : Time, @category : NamedTuple(key: String, name: String), @description : String,
     @account : String)
   end
 end

@@ -11,12 +11,10 @@ def main
                                      importer.account_files,
                                      importer.category_files)
   transactions = parsing_engine.parse
-  transactions.each do |d|
-    puts d
-  end
 
   calculation_engine = CalculationEngine.new(transactions)
-  puts calculation_engine.total(TransactionType::Outflow, "atm_withdrawal")
+  calculation_engine.display_summary(TransactionType::Inflow)
+  calculation_engine.display_summary(TransactionType::Outflow)
 end
 
 main

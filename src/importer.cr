@@ -1,13 +1,17 @@
 HOME_DIR_NAME = ".cashflow-calculator"
+OUTPUT_FILE_TEMPLATE_NAME = "output_template.csv"
 
 class Importer
-  property csv_files, account_files, category_files
+  property csv_files, account_files, category_files, has_output_file, output_file
 
   def initialize
     @csv_files = Array(String).new
     @account_files = Array(String).new
     @category_files = Array(String).new
     @home_path = File.expand_path("~/", home: true)
+
+    @output_file = "#{@home_path}/#{HOME_DIR_NAME}/#{OUTPUT_FILE_TEMPLATE_NAME}"
+    @has_output_file = File.exists?(@output_file)
   end
 
   def import

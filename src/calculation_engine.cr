@@ -24,4 +24,9 @@ class CalculationEngine
     puts("[Warning] Did not manage to find total for transactions with type \"#{transaction_type.to_s}\" and category key \"#{category_key}\"")
     return 0.0.to_f32
   end
+
+  def transactions_above(transaction_type : TransactionType | Nil, amount : Float32) : Array(Transaction)
+    return @transactions.select { |t| transaction_type.nil? ? true : t.type == transaction_type }
+      .select { |t| t.value >= amount }
+  end
 end

@@ -6,6 +6,8 @@ class Exporter
     rows = File.read_lines(output_file)
     rows = rows.map { |i| replace_with_total(i) }
     File.write("./output.csv", rows.join("\n"))
+
+    # p @calculation_engine.transactions_above(TransactionType::Outflow, 100.00)
   end
 
   private def replace_with_total(row : String) : String

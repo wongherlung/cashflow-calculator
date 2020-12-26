@@ -25,6 +25,11 @@ class CalculationEngine
     return 0.0.to_f32
   end
 
+  def get_descriptions_for_transactions(category_key : String) : String
+    return @transactions.select { |t| t.category[:key] == category_key }
+      .reduce("") { |str, i| str + "#{i.description} - #{i.value}\n" }
+  end
+
   def transactions_above(transaction_type : TransactionType | Nil, amount : Float32) : Array(Transaction)
     return @transactions.select { |t| transaction_type.nil? ? true : t.type == transaction_type }
       .select { |t| t.value >= amount }

@@ -25,7 +25,7 @@ def main
   # Output template file detected, will proceed to create CSV file based
   # on that template
   if importer.has_output_file
-    exporter.export_csv_report(importer.output_file)
+    exporter.export_csv_report(importer.output_file, false)
   end
 
 end

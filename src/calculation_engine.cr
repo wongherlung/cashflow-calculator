@@ -31,7 +31,8 @@ class CalculationEngine
   end
 
   def transactions_above(transaction_type : TransactionType | Nil, amount : Float32) : Array(Transaction)
-    return @transactions.select { |t| transaction_type.nil? ? true : t.type == transaction_type }
+    return @transactions.reject { |t| t.category["key"] == "ignore" }
+      .select { |t| transaction_type.nil? ? true : t.type == transaction_type }
       .select { |t| t.value >= amount }
   end
 end

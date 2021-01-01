@@ -5,9 +5,9 @@ class Exporter
   def export_csv_report(output_file : String, show_descriptions : Bool)
     rows = File.read_lines(output_file)
     rows = rows.map { |i| replace_with_total(i, show_descriptions) }
-    File.write("./output.csv", rows.join("\n"))
 
-    # p @calculation_engine.transactions_above(TransactionType::Outflow, 100.00)
+    rows.push("\"#{@calculation_engine.transactions_above(TransactionType::Outflow, 100.00).map { |t| t.description + " - $" + t.value.to_s }.join("\n")}\"")
+    File.write("./output.csv", rows.join("\n"))
   end
 
   private def replace_with_total(row : String, show_descriptions : Bool) : String
